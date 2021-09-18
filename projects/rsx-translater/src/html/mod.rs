@@ -10,85 +10,84 @@ use anyhow::Result;
 
 use html_parser::{Dom, Element, Node};
 
-use crate::Result;
+use crate::{AsRsx, Result};
 
 pub struct RsxBuilder {
     buffer: String,
-    image_cache: PngCache,
+    indent: usize,
+    indent_size: usize,
     svg_cache: Vec<Element>,
 }
 
-
-pub struct PngCache {}
-
-pub struct SvgCache {
-    inner: Vec<Element>,
+impl Default for RsxBuilder {
+    fn default() -> Self {
+        Self {
+            buffer: String::new(),
+            indent: 0,
+            indent_size: 4,
+            svg_cache: vec![]
+        }
+    }
 }
+
 
 impl RsxBuilder {
     #[inline]
     pub fn html_to_rsx(&mut self, html: &str) -> Result<String> {
         self.reset();
-        Dom::parse(html)?.as_rsx(self)
+        Dom::parse(html)?.write_rsx(self)?;
+        Ok(self.buffer.to_owned())
     }
     #[inline]
     pub fn html_to_rs(&mut self, html: &str) -> Result<String> {
         self.reset();
-        Dom::parse(html)?.as_rs(self)
+        Dom::parse(html)?.rs(self)?;
+        Ok(self.buffer.to_owned())
     }
+    #[inline]
     pub fn reset(&mut self) {
-
+        self.buffer.clear();
+        self.svg_cache.clear()
     }
 }
 
-impl RsxBuilder {
-    pub fn render_svg(&self) {}
-}
-
-pub trait AsRsx {
-    fn as_rsx(&self, ctx: &mut RsxBuilder) -> Result<String>;
-    fn as_rs(&self, ctx: &mut RsxBuilder) -> Result<String>;
-}
 
 impl AsRsx for Dom {
-    fn as_rsx(&self, f: &mut RsxBuilder) -> Result<String> {
-        let app = r#"
-        fn App() {
-
-        }
-        "#;
+    fn write_rsx(&self, f: &mut RsxBuilder) -> Result<String> {
+        todo!()
     }
 
-    fn as_rs(&self, f: &mut RsxBuilder) -> Result<String> {
+    fn write_rs(&self, f: &mut RsxBuilder) -> Result<String> {
         todo!()
     }
 }
 
 impl AsRsx for Node {
-    fn as_rsx(&self, f: &mut RsxBuilder) -> Result<String> {
+    fn write_rsx(&self, f: &mut RsxBuilder) -> Result<String> {
         match self {
-            Self::Text(t) => Ok(format!(f, "\"{}\"", t)),
+            Self::Text(t) => writeln!(f, "\"{}\"", t)?,
             Self::Comment(c) => Ok(format!(f, "/* {} */", c)),
-            Self::Element(e) if e.name.eq("svg") => e.as_rsx(ctx),
-            Self::Element(e) => e.as_rsx(ctx),
+            Self::Element(e) if e.name.eq("svg") => f.collect_svg(e),
+            Self::Element(e) => e.write_rsx(f),
         }
+        Ok(())
     }
 
-    fn as_rs(&self, f: &mut RsxBuilder) -> Result<String> {
+    fn write_rs(&self, f: &mut RsxBuilder) -> Result<String> {
         match self {
             Self::Text(t) => Ok(format!(f, "\"{}\"", t)),
-            Self::Element(e) => e.as_rsx(ctx),
+            Self::Element(e) => e.write_rsx(f),
             Self::Comment(c) => Ok(format!(f, "/* {} */", c)),
         }
     }
 }
 
 impl AsRsx for Element {
-    fn as_rsx(&self, f: &mut RsxBuilder) -> Result<String> {
+    fn write_rsx(&self, f: &mut RsxBuilder) -> Result<String> {
         todo!()
     }
 
-    fn as_rs(&self, f: &mut RsxBuilder) -> Result<String> {
+    fn write_rs(&self, f: &mut RsxBuilder) -> Result<String> {
         todo!()
     }
 }
@@ -242,14 +241,4 @@ fn write_tabs(f: &mut Formatter, num: u32) -> std::fmt::Result {
         write!(f, "    ")?
     }
     Ok(())
-}
-
-#[test]
-fn generates_svgs() {
-    let st = include_str!("../../../tests/svg.html");
-
-    let out = format!("{:}", convert_html_to_component(st).unwrap());
-    dbg!(&out);
-
-    std::fs::File::create("svg_rsx.rs").unwrap().write_all(out.as_bytes()).unwrap();
 }

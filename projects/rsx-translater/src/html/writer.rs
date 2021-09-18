@@ -1,5 +1,12 @@
 use super::*;
 
+impl RsxBuilder {
+    pub(crate) fn write_indent(&self) -> Result<()> {
+        write!(self.buffer, " ".repeat(4))?;
+        Ok(())
+    }
+}
+
 
 impl Write for RsxBuilder {
     fn write_str(&mut self, s: &str) -> std::fmt::Result {
