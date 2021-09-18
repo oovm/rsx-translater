@@ -8,7 +8,7 @@ impl RsxBuilder {
         writeln!(self.buffer, "icons::icon_{} {{}}", self.svg_cache.len())?;
         return Ok(())
     }
-    pub fn render_svg(&self) {
-
+    pub fn write_svg(&self) -> Result<()> {
+        Ok(())
     }
 }

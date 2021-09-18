@@ -1,31 +1,44 @@
 mod writer;
 mod svg;
+mod config;
 
 use std::{
     fmt::{Display, Formatter, Write},
 };
 use std::fmt::Arguments;
 
-use anyhow::Result;
-
 use html_parser::{Dom, Element, Node};
 
 use crate::{AsRsx, Result};
 
 pub struct RsxBuilder {
+    config: RsxBuilderConfig,
     buffer: String,
     indent: usize,
-    indent_size: usize,
     svg_cache: Vec<Element>,
+}
+
+pub struct RsxBuilderConfig {
+    component_name: String,
+    indent_size: usize,
+}
+
+impl Default for RsxBuilderConfig {
+    fn default() -> Self {
+        Self {
+            component_name: "component".to_string(),
+            indent_size: 4,
+        }
+    }
 }
 
 impl Default for RsxBuilder {
     fn default() -> Self {
         Self {
+            config: Default::default(),
             buffer: String::new(),
             indent: 0,
-            indent_size: 4,
-            svg_cache: vec![]
+            svg_cache: vec![],
         }
     }
 }
@@ -41,7 +54,7 @@ impl RsxBuilder {
     #[inline]
     pub fn html_to_rs(&mut self, html: &str) -> Result<String> {
         self.reset();
-        Dom::parse(html)?.rs(self)?;
+        Dom::parse(html)?.write_rs(self)?;
         Ok(self.buffer.to_owned())
     }
     #[inline]
@@ -53,41 +66,47 @@ impl RsxBuilder {
 
 
 impl AsRsx for Dom {
-    fn write_rsx(&self, f: &mut RsxBuilder) -> Result<String> {
-        todo!()
+    fn write_rsx(&self, f: &mut RsxBuilder) -> Result<()> {
+        for i in &self.children {
+            i.write_rsx(f)?
+        }
+        f.write_svg()?;
+        Ok(())
     }
 
-    fn write_rs(&self, f: &mut RsxBuilder) -> Result<String> {
+    fn write_rs(&self, f: &mut RsxBuilder) -> Result<()> {
         todo!()
     }
 }
 
 impl AsRsx for Node {
-    fn write_rsx(&self, f: &mut RsxBuilder) -> Result<String> {
+    fn write_rsx(&self, f: &mut RsxBuilder) -> Result<()> {
         match self {
             Self::Text(t) => writeln!(f, "\"{}\"", t)?,
-            Self::Comment(c) => Ok(format!(f, "/* {} */", c)),
-            Self::Element(e) if e.name.eq("svg") => f.collect_svg(e),
-            Self::Element(e) => e.write_rsx(f),
+            Self::Comment(c) => writeln!(f, "/* {} */", c)?,
+            Self::Element(e) if e.name.eq("svg") => f.collect_svg(e)?,
+            Self::Element(e) => e.write_rsx(f)?,
         }
         Ok(())
     }
 
-    fn write_rs(&self, f: &mut RsxBuilder) -> Result<String> {
+    fn write_rs(&self, f: &mut RsxBuilder) -> Result<()> {
         match self {
-            Self::Text(t) => Ok(format!(f, "\"{}\"", t)),
-            Self::Element(e) => e.write_rsx(f),
-            Self::Comment(c) => Ok(format!(f, "/* {} */", c)),
+            Self::Text(t) => writeln!(f, "\"{}\"", t)?,
+            Self::Comment(c) => writeln!(f, "/* {} */", c)?,
+            Self::Element(e) if e.name.eq("svg") => f.collect_svg(e)?,
+            Self::Element(e) => e.write_rs(f)?,
         }
+        Ok(())
     }
 }
 
 impl AsRsx for Element {
-    fn write_rsx(&self, f: &mut RsxBuilder) -> Result<String> {
+    fn write_rsx(&self, f: &mut RsxBuilder) -> Result<()> {
         todo!()
     }
 
-    fn write_rs(&self, f: &mut RsxBuilder) -> Result<String> {
+    fn write_rs(&self, f: &mut RsxBuilder) -> Result<()> {
         todo!()
     }
 }

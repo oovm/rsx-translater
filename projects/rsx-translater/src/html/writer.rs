@@ -1,8 +1,17 @@
 use super::*;
 
 impl RsxBuilder {
-    pub(crate) fn write_indent(&self) -> Result<()> {
-        write!(self.buffer, " ".repeat(4))?;
+    #[inline]
+    pub(crate) fn indent(&mut self) {
+        self.indent += self.config.indent_size
+    }
+    #[inline]
+    pub(crate) fn dedent(&mut self) {
+        self.indent -= self.config.indent_size
+    }
+    #[inline]
+    pub(crate) fn write_indent(&mut self) -> Result<()> {
+        write!(self.buffer, "{}", &" ".repeat(4))?;
         Ok(())
     }
 }
