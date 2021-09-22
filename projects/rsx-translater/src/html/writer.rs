@@ -14,12 +14,27 @@ impl RsxBuilder {
     }
     #[inline]
     pub(crate) fn write_indent(&mut self) -> Result<()> {
-        write!(self.buffer, "{}", &" ".repeat(4))?;
+        write!(self.buffer, "{}", &" ".repeat(self.indent_now))?;
         Ok(())
     }
     #[inline]
     pub(crate) fn write_newline(&mut self) -> Result<()> {
-        write!(self.buffer, "\n{}", &" ".repeat(4))?;
+        write!(self.buffer, "\n")?;
+        self.write_indent()?;
+        Ok(())
+    }
+    #[inline]
+    pub(crate) fn write_brace_l(&mut self) -> Result<()> {
+        write!(self.buffer, "{{\n")?;
+        self.indent();
+        self.write_newline()?;
+        Ok(())
+    }
+    #[inline]
+    pub(crate) fn write_brace_r(&mut self) -> Result<()> {
+        self.dedent();
+        self.write_newline()?;
+        write!(self.buffer, "}}")?;
         Ok(())
     }
 }
@@ -44,9 +59,9 @@ impl AsRsx for Element {
     fn write_rsx(&self, f: &mut RsxBuilder) -> Result<()> {
         // 命名头
         f.write_indent()?;
-        write!(f, "{} {{ ", &self.name)?;
-        f.indent();
-        f.write_newline()?;
+        f.write_str(&self.name)?;
+        f.write_char(' ')?;
+        f.write_brace_l()?;
         // html 类名
         // todo: dioxus will eventually support classnames
         // for now, just write them with a space between each
@@ -86,10 +101,8 @@ impl AsRsx for Element {
         for child in &self.children {
             child.write_rsx(f)?
         }
-        f.dedent();
-        f.write_newline()?;
         // 结束
-        writeln!(f, "}}")?;
+        f.write_brace_r()?;
         Ok(())
     }
 

@@ -1,131 +1,132 @@
-    div { 
+div {
+
     class: "p-6 card bordered"
     
-        div { 
-    class: "form-control"
-    
-        label { 
-    class: "cursor-pointer label"
-    
-        span { 
-    class: "label-text"
-    
-    "Neutral"
+        div {
 
-    }
-    input { 
-    class: "radio"
-    
-    checked: "checked",
+        class: "form-control"
+        
+                label {
+
+            class: "cursor-pointer label"
+            
+                        span {
+
+                class: "label-text"
+                
+                "Neutral"
+
+            }            input {
+
+                class: "radio"
+                
+                checked: "checked",
 name: "opt",
 r#type: "radio",
 value: "",
 
-    }
+            }
+        }
+    }    div {
 
-    }
+        class: "form-control"
+        
+                label {
 
-    }
-    div {
-    class: "form-control"
+            class: "cursor-pointer label"
+            
+                        span {
 
-        label {
-    class: "cursor-pointer label"
+                class: "label-text"
+                
+                "Primary"
 
-        span {
-    class: "label-text"
+            }            input {
 
-    "Primary"
-
-    }
-    input {
-    class: "radio radio-primary"
-
-    checked: "checked",
+                class: "radio radio-primary"
+                
+                checked: "checked",
 name: "opt",
 r#type: "radio",
 value: "",
 
-    }
+            }
+        }
+    }    div {
 
-    }
+        class: "form-control"
+        
+                label {
 
-    }
-    div {
-    class: "form-control"
+            class: "cursor-pointer label"
+            
+                        span {
 
-        label {
-    class: "cursor-pointer label"
+                class: "label-text"
+                
+                "Secondary"
 
-        span {
-    class: "label-text"
+            }            input {
 
-    "Secondary"
-
-    }
-    input {
-    class: "radio radio-secondary"
-
-    checked: "checked",
+                class: "radio radio-secondary"
+                
+                checked: "checked",
 name: "opt",
 r#type: "radio",
 value: "",
 
-    }
+            }
+        }
+    }    div {
 
-    }
+        class: "form-control"
+        
+                label {
 
-    }
-    div {
-    class: "form-control"
+            class: "cursor-pointer label"
+            
+                        span {
 
-        label {
-    class: "cursor-pointer label"
+                class: "label-text"
+                
+                "Accent"
 
-        span {
-    class: "label-text"
+            }            input {
 
-    "Accent"
-
-    }
-    input {
-    class: "radio radio-accent"
-
-    checked: "checked",
+                class: "radio radio-accent"
+                
+                checked: "checked",
 name: "opt",
 r#type: "radio",
 value: "",
 
-    }
+            }
+        }
+    }    div {
 
-    }
+        class: "form-control"
+        
+                label {
 
-    }
-    div {
-    class: "form-control"
+            class: "label"
+            
+                        span {
 
-        label {
-    class: "label"
+                class: "label-text"
+                
+                "Disabled"
 
-        span {
-    class: "label-text"
+            }            input {
 
-    "Disabled"
-
-    }
-    input {
-    class: "radio"
-
-    checked: "checked",
+                class: "radio"
+                
+                checked: "checked",
 disabled: "disabled",
 name: "opt",
 r#type: "radio",
 value: "",
 
+            }
+        }
     }
-
-    }
-
-    }
-
-    }
+}
