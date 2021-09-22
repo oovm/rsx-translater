@@ -1,32 +1,131 @@
-<div class="p-6 card bordered">
-    <div class="form-control">
-        <label class="cursor-pointer label">
-            <span class="label-text">Neutral</span>
-            <input type="radio" name="opt" checked="checked" class="radio" value="">
-        </label>
-    </div>
-    <div class="form-control">
-        <label class="cursor-pointer label">
-            <span class="label-text">Primary</span>
-            <input type="radio" name="opt" checked="checked" class="radio radio-primary" value="">
-        </label>
-    </div>
-    <div class="form-control">
-        <label class="cursor-pointer label">
-            <span class="label-text">Secondary</span>
-            <input type="radio" name="opt" checked="checked" class="radio radio-secondary" value="">
-        </label>
-    </div>
-    <div class="form-control">
-        <label class="cursor-pointer label">
-            <span class="label-text">Accent</span>
-            <input type="radio" name="opt" checked="checked" class="radio radio-accent" value="">
-        </label>
-    </div>
-    <div class="form-control">
-        <label class="label">
-            <span class="label-text">Disabled</span>
-            <input type="radio" name="opt" checked="checked" value="" disabled="disabled" class="radio">
-        </label>
-    </div>
-</div>
+    div { 
+    class: "p-6 card bordered"
+    
+        div { 
+    class: "form-control"
+    
+        label { 
+    class: "cursor-pointer label"
+    
+        span { 
+    class: "label-text"
+    
+    "Neutral"
+
+    }
+    input { 
+    class: "radio"
+    
+    checked: "checked",
+name: "opt",
+r#type: "radio",
+value: "",
+
+    }
+
+    }
+
+    }
+    div {
+    class: "form-control"
+
+        label {
+    class: "cursor-pointer label"
+
+        span {
+    class: "label-text"
+
+    "Primary"
+
+    }
+    input {
+    class: "radio radio-primary"
+
+    checked: "checked",
+name: "opt",
+r#type: "radio",
+value: "",
+
+    }
+
+    }
+
+    }
+    div {
+    class: "form-control"
+
+        label {
+    class: "cursor-pointer label"
+
+        span {
+    class: "label-text"
+
+    "Secondary"
+
+    }
+    input {
+    class: "radio radio-secondary"
+
+    checked: "checked",
+name: "opt",
+r#type: "radio",
+value: "",
+
+    }
+
+    }
+
+    }
+    div {
+    class: "form-control"
+
+        label {
+    class: "cursor-pointer label"
+
+        span {
+    class: "label-text"
+
+    "Accent"
+
+    }
+    input {
+    class: "radio radio-accent"
+
+    checked: "checked",
+name: "opt",
+r#type: "radio",
+value: "",
+
+    }
+
+    }
+
+    }
+    div {
+    class: "form-control"
+
+        label {
+    class: "label"
+
+        span {
+    class: "label-text"
+
+    "Disabled"
+
+    }
+    input {
+    class: "radio"
+
+    checked: "checked",
+disabled: "disabled",
+name: "opt",
+r#type: "radio",
+value: "",
+
+    }
+
+    }
+
+    }
+
+    }
