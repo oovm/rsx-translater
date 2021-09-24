@@ -3,7 +3,7 @@ mod svg;
 mod config;
 
 use std::{
-    fmt::{Display, Formatter, Write},
+    fmt::{ Write},
 };
 use std::fmt::Arguments;
 
@@ -74,7 +74,7 @@ impl AsRsx for Dom {
         Ok(())
     }
 
-    fn write_rs(&self, f: &mut RsxBuilder) -> Result<()> {
+    fn write_rs(&self, _: &mut RsxBuilder) -> Result<()> {
         todo!()
     }
 }

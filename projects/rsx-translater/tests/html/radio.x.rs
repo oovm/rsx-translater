@@ -1,132 +1,110 @@
 div {
-
     class: "p-6 card bordered"
-    
-        div {
-
+    div {
         class: "form-control"
-        
-                label {
-
+        label {
             class: "cursor-pointer label"
-            
-                        span {
-
+            span {
                 class: "label-text"
-                
                 "Neutral"
 
-            }            input {
-
-                class: "radio"
-                
-                checked: "checked",
-name: "opt",
-r#type: "radio",
-value: "",
-
             }
-        }
-    }    div {
-
-        class: "form-control"
-        
-                label {
-
-            class: "cursor-pointer label"
-            
-                        span {
-
-                class: "label-text"
+            input {
+                class: "radio"
+                checked: "checked",
+                name: "opt",
+                r#type: "radio",
+                value: "",
                 
+            }
+            
+        }
+        
+    }
+    div {
+        class: "form-control"
+        label {
+            class: "cursor-pointer label"
+            span {
+                class: "label-text"
                 "Primary"
 
-            }            input {
-
-                class: "radio radio-primary"
-                
-                checked: "checked",
-name: "opt",
-r#type: "radio",
-value: "",
-
             }
-        }
-    }    div {
-
-        class: "form-control"
-        
-                label {
-
-            class: "cursor-pointer label"
-            
-                        span {
-
-                class: "label-text"
+            input {
+                class: "radio radio-primary"
+                checked: "checked",
+                name: "opt",
+                r#type: "radio",
+                value: "",
                 
+            }
+            
+        }
+        
+    }
+    div {
+        class: "form-control"
+        label {
+            class: "cursor-pointer label"
+            span {
+                class: "label-text"
                 "Secondary"
 
-            }            input {
-
-                class: "radio radio-secondary"
-                
-                checked: "checked",
-name: "opt",
-r#type: "radio",
-value: "",
-
             }
-        }
-    }    div {
-
-        class: "form-control"
-        
-                label {
-
-            class: "cursor-pointer label"
-            
-                        span {
-
-                class: "label-text"
+            input {
+                class: "radio radio-secondary"
+                checked: "checked",
+                name: "opt",
+                r#type: "radio",
+                value: "",
                 
+            }
+            
+        }
+        
+    }
+    div {
+        class: "form-control"
+        label {
+            class: "cursor-pointer label"
+            span {
+                class: "label-text"
                 "Accent"
 
-            }            input {
-
-                class: "radio radio-accent"
-                
-                checked: "checked",
-name: "opt",
-r#type: "radio",
-value: "",
-
             }
-        }
-    }    div {
-
-        class: "form-control"
-        
-                label {
-
-            class: "label"
-            
-                        span {
-
-                class: "label-text"
+            input {
+                class: "radio radio-accent"
+                checked: "checked",
+                name: "opt",
+                r#type: "radio",
+                value: "",
                 
+            }
+            
+        }
+        
+    }
+    div {
+        class: "form-control"
+        label {
+            class: "label"
+            span {
+                class: "label-text"
                 "Disabled"
 
-            }            input {
-
-                class: "radio"
-                
-                checked: "checked",
-disabled: "disabled",
-name: "opt",
-r#type: "radio",
-value: "",
-
             }
+            input {
+                class: "radio"
+                checked: "checked",
+                disabled: "disabled",
+                name: "opt",
+                r#type: "radio",
+                value: "",
+                
+            }
+            
         }
+        
     }
+    
 }
