@@ -3,7 +3,7 @@ mod svg;
 mod config;
 
 use std::{
-    fmt::{ Write},
+    fmt::{Write},
 };
 use std::fmt::Arguments;
 
@@ -68,7 +68,8 @@ impl RsxBuilder {
 impl AsRsx for Dom {
     fn write_rsx(&self, f: &mut RsxBuilder) -> Result<()> {
         for i in &self.children {
-            i.write_rsx(f)?
+            i.write_rsx(f)?;
+            f.write_newline()?;
         }
         f.write_svg()?;
         Ok(())
@@ -82,8 +83,8 @@ impl AsRsx for Dom {
 impl AsRsx for Node {
     fn write_rsx(&self, f: &mut RsxBuilder) -> Result<()> {
         match self {
-            Self::Text(t) => writeln!(f, "\"{}\"", t)?,
-            Self::Comment(c) => writeln!(f, "/* {} */", c)?,
+            Self::Text(t) => { write!(f, "{:?}", t)? }
+            Self::Comment(c) => write!(f, "/* {} */", c)?,
             Self::Element(e) if e.name.eq("svg") => f.collect_svg(e)?,
             Self::Element(e) => e.write_rsx(f)?,
         }

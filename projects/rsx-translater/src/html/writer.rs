@@ -64,9 +64,12 @@ impl AsRsx for Element {
         // html 类名
         // todo: dioxus will eventually support classnames
         // for now, just write them with a space between each
-        write!(f, "class: ")?;
-        write!(f, "{:?}", self.classes.join(" "))?;
-        f.write_newline()?;
+        if !self.classes.is_empty() {
+            write!(f, "class: ")?;
+            write!(f, "{:?}", self.classes.join(" "))?;
+            f.write_char(',')?;
+            f.write_newline()?;
+        }
         // id 属性
         if let Some(id) = &self.id {
             write!(f, "id: {:?},", id)?;
@@ -74,13 +77,12 @@ impl AsRsx for Element {
         }
         // 其他属性
         let ordered = BTreeMap::from_iter(&self.attributes);
-
-        for (name, value) in &ordered {
+        let max_index = ordered.len();
+        for (index, (name, value)) in ordered.iter().enumerate() {
             if name.chars().any(|ch| ch.is_ascii_uppercase() || ch == '-') {
                 let new_name = name.to_case(Case::Snake);
                 write!(f, "{}", new_name)?
-            }
-            else {
+            } else {
                 match name.as_str() {
                     "for" | "async" | "type" | "as" => write!(f, "r#")?,
                     _ => {}
@@ -91,16 +93,23 @@ impl AsRsx for Element {
                 Some(v) => write!(f, ": {:?},", v)?,
                 None => write!(f, ": \"\",")?,
             }
-            f.write_newline()?
+            // println!("{} < {}", index, max_index);
+            if index + 1 != max_index {
+                f.write_newline()?
+            }
         }
         // 子节点
         // now the children
-        for child in &self.children {
+        let max_index = self.children.len();
+
+        for (index, child) in self.children.iter().enumerate() {
             child.write_rsx(f)?;
+            if index + 1 != max_index {
+                f.write_newline()?
+            }
         }
         // 结束
         f.write_brace_r()?;
-        f.write_newline()?;
         Ok(())
     }
 

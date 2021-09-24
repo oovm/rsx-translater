@@ -8,44 +8,55 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
+use rsx_convert::RsxBuilder;
 
 fn main() {
-    dioxus::desktop::launch(app);
+    dioxus::desktop::launch(App);
 }
 
-pub fn app(cx: Scope) -> Element {
-    cx.render(rsx!(
-        link { href:"https://cdn.jsdelivr.net/npm/daisyui@1.24.3/dist/full.css", rel:"stylesheet" }
-        link { href:"https://cdn.jsdelivr.net/npm/tailwindcss@2.2/dist/tailwind.min.css", rel:"stylesheet" }
-    ))
-}
+pub fn App(cx: Scope) -> Element {
+    cx.render(rsx! {
+        link {
+            href: "https://cdn.jsdelivr.net/npm/daisyui@1.24.3/dist/full.css",
+            rel: "stylesheet",
 
-pub fn StacksIcon(cx: Scope) -> Element {
-    cx.render(rsx!(
-        svg {
-            fill: "none",
-            stroke: "currentColor",
-            stroke_linecap: "round",
-            stroke_linejoin: "round",
-            stroke_width: "2",
-            class: "w-10 h-10 text-white p-2 bg-indigo-500 rounded-full",
-            view_box: "0 0 24 24",
-            path { d: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"}
         }
-    ))
+        link {
+            href: "https://cdn.jsdelivr.net/npm/tailwindcss@2.2/dist/tailwind.min.css",
+            rel: "stylesheet",
+
+        }
+        Editor {
+
+        }
+    })
 }
 
-pub fn RightArrowIcon(cx: Scope) -> Element {
+pub fn Editor(cx: Scope) -> Element {
+    let text = use_state(&cx, || String::new());
+    let mut builder = RsxBuilder::default();
+    let out = match builder.html_to_rsx(text.get()) {
+        Ok(o) => rsx!(
+            pre {code {"{o}"}}
+        ),
+        Err(e) => rsx!(
+            pre {
+
+                code {
+                    class: "text-red-400",
+                    "{e}"
+                }
+            }
+        ),
+    };
+
     cx.render(rsx!(
-        svg {
-            fill: "none",
-            stroke: "currentColor",
-            stroke_linecap: "round",
-            stroke_linejoin: "round",
-            stroke_width: "2",
-            class: "w-4 h-4 ml-1",
-            view_box: "0 0 24 24",
-            path { d: "M5 12h14M12 5l7 7-7 7"}
+        div {
+            textarea {
+                id: "editor",
+                oninput: move |e| text.set(e.value.to_owned()),
+            }
+            out
         }
     ))
 }
