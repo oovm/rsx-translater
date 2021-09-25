@@ -9,6 +9,7 @@
 
 use dioxus::prelude::*;
 use rsx_convert::RsxBuilder;
+use crate::dioxus_elements::span;
 
 fn main() {
     dioxus::desktop::launch(App);
@@ -33,7 +34,7 @@ pub fn App(cx: Scope) -> Element {
 }
 
 pub fn Editor(cx: Scope) -> Element {
-    let text = use_state(&cx, || String::new());
+    let text = use_state(&cx, || String::from("<span>content</span>"));
     let mut builder = RsxBuilder::default();
     let out = match builder.html_to_rsx(text.get()) {
         Ok(o) => rsx!(
@@ -41,7 +42,6 @@ pub fn Editor(cx: Scope) -> Element {
         ),
         Err(e) => rsx!(
             pre {
-
                 code {
                     class: "text-red-400",
                     "{e}"
@@ -52,11 +52,93 @@ pub fn Editor(cx: Scope) -> Element {
 
     cx.render(rsx!(
         div {
-            textarea {
-                id: "editor",
-                oninput: move |e| text.set(e.value.to_owned()),
+            class: "flex flex-col",
+            div {
+                class: "form-control",
+                textarea {
+                    class: "textarea h-96 textarea-bordered textarea-primary",
+                    id: "editor",
+                    placeholder: "<span>content</span>",
+                    oninput: move |e| text.set(e.value.to_owned()),
+                }
             }
-            out
+            div {
+                class: "mockup-code",
+                pre {
+                    data_prefix: "1",
+                    code {
+                        "npm i daisyui"
+                    }
+                }
+                pre {
+                    data_prefix: "2",
+                    code {
+                        "installing..."
+                    }
+                }
+                pre {
+                    class: "bg-warning text-neutral",
+                    data_prefix: "3",
+                    code {
+                        "Error!"
+                    }
+                }
+            }
+        }
+        div {
+            class: "form-control",
+            label {
+                class: "cursor-pointer label",
+                span {
+                    class: "label-text",
+                    "Is Component"
+                }
+                input {
+                    class: "checkbox",
+                    checked: "checked",
+                    r#type: "checkbox",
+                }
+            }
+            label {
+                class: "input-group input-group-sm",
+                span {
+                    "Component name"
+                }
+                input {
+                    r#type: "text",
+                    class: "input input-bordered input-sm",
+                    value: "20.99",
+                }
+            }
+            label {
+                class: "cursor-pointer label",
+                span {
+                    class: "label-text",
+                    "Is Renderer"
+                }
+                input {
+                    r#type: "checkbox",
+                    class: "checkbox",
+                    checked: "checked",
+                }
+            }
+            label {
+                class: "cursor-pointer label",
+                span {
+                    class: "label-text",
+                    "Pre Ident"
+                }
+                input {
+                    r#type: "range",
+                    class: "range",
+                    max: "100",
+                    value: "40",
+                }
+                span {
+                    class: "label-text",
+                    "4"
+                }
+            }
         }
     ))
 }
