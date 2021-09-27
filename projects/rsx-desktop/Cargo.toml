@@ -1,0 +1,22 @@
+[package]
+name = "rsx-desktop"
+publish = false
+version = "0.1.0"
+authors = ["Aster <192607617@qq.com>"]
+description = "..."
+repository = "..."
+readme = "Readme.md"
+license = "MPL-2.0"
+edition = "2018"
+
+[dependencies]
+rsx-platform-free = {version = "*", path = "../rsx-platform-free"}
+
+[dependencies.dioxus]
+version = "0.1.7"
+features = ["desktop"]
+
+[dev-dependencies]
+
+[features]
+default = []

@@ -21,6 +21,9 @@ pub struct RsxBuilder {
 pub struct RsxBuilderConfig {
     component_name: String,
     indent_size: usize,
+    indent_pre: usize,
+    is_renderer: bool,
+    is_component: bool,
 }
 
 impl Default for RsxBuilderConfig {
@@ -28,6 +31,9 @@ impl Default for RsxBuilderConfig {
         Self {
             component_name: "component".to_string(),
             indent_size: 4,
+            indent_pre: 0,
+            is_renderer: false,
+            is_component: false
         }
     }
 }
@@ -60,7 +66,9 @@ impl RsxBuilder {
     #[inline]
     pub fn reset(&mut self) {
         self.buffer.clear();
-        self.svg_cache.clear()
+        self.svg_cache.clear();
+        self.indent_now = self.config.indent_pre;
+
     }
 }
 
