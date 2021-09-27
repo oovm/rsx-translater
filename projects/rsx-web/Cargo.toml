@@ -14,7 +14,7 @@ rsx-convert = {version = "0.1.*", path = "../rsx-translater"}
 
 [dependencies.dioxus]
 version = "0.1.7"
-features = ["desktop"]
+features = ["web", "ssr"]
 
 [dev-dependencies]
 

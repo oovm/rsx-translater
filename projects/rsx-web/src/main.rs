@@ -4,15 +4,29 @@ use dioxus::prelude::*;
 use rsx_convert::RsxBuilder;
 
 fn main() {
-    dioxus::desktop::launch(App);
+    // dioxus::desktop::launch(AppDesktop);
+    dioxus::web::launch(AppWeb)
 }
 
-pub fn App(cx: Scope) -> Element {
+pub fn main_ssr() {
+    let mut vdom = VirtualDom::new(AppWeb);
+    let _ = vdom.rebuild();
+    println!("{}", dioxus::ssr::render_vdom(&vdom));
+}
+
+pub fn AppWeb(cx: Scope) -> Element {
+    cx.render(rsx! {
+        Editor {
+
+        }
+    })
+}
+
+pub fn AppDesktop(cx: Scope) -> Element {
     cx.render(rsx! {
         link {
             href: "https://cdn.jsdelivr.net/npm/daisyui@1.24.3/dist/full.css",
             rel: "stylesheet",
-
         }
         link {
             href: "https://cdn.jsdelivr.net/npm/tailwindcss@2.2/dist/tailwind.min.css",
@@ -25,14 +39,18 @@ pub fn App(cx: Scope) -> Element {
     })
 }
 
+#[derive(Props, PartialEq)]
+pub struct CodeRendererData {
+    is_error: bool,
+    code: String,
+}
 
-#[inline_props]
-pub fn CodeRenderer(cx: Scope, code: String, is_error: bool) -> Element {
-    let class = match is_error {
-        true => { "bg-warning text-neutral" }
-        false => { "" }
+pub fn CodeRenderer(cx: Scope<CodeRendererData>) -> Element {
+    let class = match cx.props.is_error {
+        true => "bg-warning text-neutral",
+        false => "",
     };
-    let code = code.lines().enumerate().map(|(i, t)| rsx!(
+    let code = cx.props.code.lines().enumerate().map(|(i, t)| rsx!(
         pre {
             class: "{class}",
             "data-prefix": "{i}",
