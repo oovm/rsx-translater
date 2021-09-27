@@ -1,15 +1,7 @@
-//! Example: Basic Tailwind usage
-//!
-//! This example shows how an app might be styled with TailwindCSS.
-//!
-//! To minify your tailwind bundle, currently you need to use npm. Follow these instructions:
-//!
-//!     https://dev.to/arctic_hen7/how-to-set-up-tailwind-css-with-yew-and-trunk-il9
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
 use rsx_convert::RsxBuilder;
-use crate::dioxus_elements::span;
 
 fn main() {
     dioxus::desktop::launch(App);
@@ -33,19 +25,49 @@ pub fn App(cx: Scope) -> Element {
     })
 }
 
+
+#[inline_props]
+pub fn CodeRenderer(cx: Scope, code: String, is_error: bool) -> Element {
+    let class = match is_error {
+        true => { "bg-warning text-neutral" }
+        false => { "" }
+    };
+    let code = code.lines().enumerate().map(|(i, t)| rsx!(
+        pre {
+            class: "{class}",
+            "data-prefix": "{i}",
+            code {"{t}"}
+        }
+    ));
+    cx.render(rsx!(code))
+}
+
+#[derive(Props, PartialEq)]
+pub struct EditorSettings {
+    /// fn
+    is_component: bool,
+    /// fn name() {}
+    component_name: String,
+    /// cx.render()
+    is_renderer: bool,
+    ///
+    pre_indent: usize,
+}
+
 pub fn Editor(cx: Scope) -> Element {
     let text = use_state(&cx, || String::from("<span>content</span>"));
     let mut builder = RsxBuilder::default();
     let out = match builder.html_to_rsx(text.get()) {
         Ok(o) => rsx!(
-            pre {code {"{o}"}}
+            CodeRenderer {
+                code: o,
+                is_error: false,
+            }
         ),
         Err(e) => rsx!(
-            pre {
-                code {
-                    class: "text-red-400",
-                    "{e}"
-                }
+            CodeRenderer {
+                code: e.to_string(),
+                is_error: true,
             }
         ),
     };
@@ -64,25 +86,7 @@ pub fn Editor(cx: Scope) -> Element {
             }
             div {
                 class: "mockup-code",
-                pre {
-                    data_prefix: "1",
-                    code {
-                        "npm i daisyui"
-                    }
-                }
-                pre {
-                    data_prefix: "2",
-                    code {
-                        "installing..."
-                    }
-                }
-                pre {
-                    class: "bg-warning text-neutral",
-                    data_prefix: "3",
-                    code {
-                        "Error!"
-                    }
-                }
+                out
             }
         }
         div {
@@ -107,7 +111,7 @@ pub fn Editor(cx: Scope) -> Element {
                 input {
                     r#type: "text",
                     class: "input input-bordered input-sm",
-                    value: "20.99",
+                    value: "App",
                 }
             }
             label {
@@ -136,7 +140,7 @@ pub fn Editor(cx: Scope) -> Element {
                 }
                 span {
                     class: "label-text",
-                    "4"
+                    "0"
                 }
             }
         }
