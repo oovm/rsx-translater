@@ -4,12 +4,12 @@ use dioxus::prelude::*;
 use rsx_convert::RsxBuilder;
 
 #[derive(Props, PartialEq)]
-pub struct CodeRendererData {
+pub struct CodeRendererP {
     is_error: bool,
     code: String,
 }
 
-pub fn CodeRenderer(cx: Scope<CodeRendererData>) -> Element {
+pub fn CodeRenderer(cx: Scope<CodeRendererP>) -> Element {
     let class = match cx.props.is_error {
         true => "bg-warning text-neutral",
         false => "",
@@ -37,7 +37,7 @@ pub struct EditorSettings {
 }
 
 pub fn Editor(cx: Scope) -> Element {
-    let text = use_state(&cx, || String::from("<span>content</span>"));
+    let text = use_state(&cx, || String::new());
     let mut builder = RsxBuilder::default();
     let out = match builder.html_to_rsx(text.get()) {
         Ok(o) => rsx!(
