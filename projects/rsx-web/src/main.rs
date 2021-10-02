@@ -1,9 +1,10 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
-use rsx_convert::RsxBuilder;
+use rsx_platform_free::Editor;
 
 fn main() {
+    wasm_logger::init(wasm_logger::Config::default());
     dioxus::web::launch(AppWeb)
 }
 

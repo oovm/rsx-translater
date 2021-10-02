@@ -10,7 +10,9 @@ license = "MPL-2.0"
 edition = "2018"
 
 [dependencies]
-rsx-convert = {version = "0.1.*", path = "../rsx-translater"}
+rsx-platform-free = {version = "*", path = "../rsx-platform-free"}
+wasm-logger = "0.2.0"
+log = "0.4.6"
 
 [dependencies.dioxus]
 version = "0.1.7"

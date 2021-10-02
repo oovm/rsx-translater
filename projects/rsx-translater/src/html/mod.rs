@@ -10,7 +10,9 @@ use std::fmt::Arguments;
 use std::iter::FromIterator;
 use html_parser::{Dom, Element, Node};
 use crate::{AsRsx, Result};
+use std::fmt::{Debug, Formatter};
 
+#[derive(Clone)]
 pub struct RsxBuilder {
     config: RsxBuilderConfig,
     buffer: String,
@@ -18,6 +20,7 @@ pub struct RsxBuilder {
     svg_cache: Vec<Element>,
 }
 
+#[derive(Clone, Debug)]
 pub struct RsxBuilderConfig {
     component_name: String,
     indent_size: usize,

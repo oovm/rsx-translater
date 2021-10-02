@@ -5,6 +5,7 @@ use rsx_platform_free::Editor;
 
 
 fn main() {
+    wasm_logger::init(wasm_logger::Config::default());
     dioxus::desktop::launch(AppDesktop);
 }
 
