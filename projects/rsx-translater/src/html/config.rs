@@ -1,27 +1,31 @@
-
 use super::*;
 
 
 impl RsxBuilder {
     #[inline]
-    pub fn set_config(&mut self, config: RsxBuilderConfig) {
-        self.config = config
+    pub fn set_config(mut self, config: RsxBuilderConfig)-> Self {
+        self.config = config;
+        self
     }
     #[inline]
-    pub fn set_name(&mut self, name: String) {
-        self.config.component_name = name
+    pub fn set_name(mut self, name: String)->Self {
+        self.config.component_name = name;
+        self
     }
     #[inline]
-    pub fn preset_indent(&mut self, indent: usize) {
-        self.config.indent_pre = indent
+    pub fn preset_indent(mut self, indent: usize) -> Self  {
+        self.config.indent_pre = indent;
+        self
     }
     #[inline]
-    pub fn config_component(&mut self, config: bool) {
-        self.config.is_component = config
+    pub fn config_component(mut self, config: bool) -> Self {
+        self.config.is_component = config;
+        self
     }
     #[inline]
-    pub fn config_renderer(&mut self, config: bool) {
-        self.config.is_renderer = config
+    pub fn config_renderer(mut self, config: bool) -> Self  {
+        self.config.is_renderer = config;
+        self
     }
 }
 

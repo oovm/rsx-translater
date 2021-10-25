@@ -1,10 +1,6 @@
 #![allow(non_snake_case)]
 #![feature(arbitrary_self_types)]
 
-use std::borrow::BorrowMut;
-use std::cell::RefMut;
-use std::ops::DerefMut;
-use std::str::ParseBoolError;
 use dioxus::events::{FormEvent};
 use dioxus::prelude::*;
 use rsx_convert::RsxBuilder;
@@ -30,58 +26,22 @@ pub fn CodeRenderer(cx: Scope<CodeRendererP>) -> Element {
     cx.render(rsx!(code))
 }
 
-#[derive(Props, PartialEq)]
-pub struct EditorSettings {
-    /// fn
-    is_component: bool,
-    /// fn name() {}
-    component_name: String,
-    /// cx.render()
-    is_renderer: bool,
-    ///
-    pre_indent: usize,
+pub struct RsxBuilderComponent {
+    inner: RsxBuilder,
 }
 
-impl Default for EditorSettings {
+impl Default for RsxBuilderComponent {
     fn default() -> Self {
         Self {
-            is_component: false,
-            component_name: "App".to_string(),
-            is_renderer: false,
-            pre_indent: 0
+            inner: Default::default()
         }
     }
 }
 
-impl EditorSettings {
-    pub fn set_as_component(self: UseState<Self>, e: FormEvent) {
-        let is_component = match e.value.parse::<bool>() {
-            Ok(o) => {o}
-            Err(_) => {return }
-        };
-        // let new = Self {
-        //     is_component,
-        //     component_name: "".to_string(),
-        //     is_renderer: false,
-        //     pre_indent: 0
-        // };
-        match self.get_wip_mut().deref_mut() {
-            None => {}
-            Some(s) => {s.is_component = is_component}
-        }
-        self.needs_update();
-        // self.set(new)
-    }
-}
-
-pub trait RsxBuilderEffect {
-    fn render(self: UseState<Self>, input: &str) -> LazyNodes;
-}
-
-impl RsxBuilderEffect for RsxBuilder {
+impl RsxBuilderComponent {
     fn render(self: UseState<Self>, input: &str) -> LazyNodes {
-        let mut new = self.get().clone();
-        let out = match new.html_to_rsx(input) {
+        let rendered = self.inner.clone().html_to_rsx(input);
+        match rendered {
             Ok(o) => rsx!(
                 CodeRenderer {
                     code: o,
@@ -94,15 +54,42 @@ impl RsxBuilderEffect for RsxBuilder {
                     is_error: true,
                 }
             ),
+        }
+    }
+    fn set_component_name(self: UseState<Self>, e: FormEvent) {
+        let new = self.inner.clone().set_name(e.value.to_owned());
+        self.set(Self { inner: new })
+    }
+    fn set_as_component(self: UseState<Self>, e: FormEvent) {
+        let new = match e.value.parse::<bool>() {
+            Ok(o) => { self.inner.clone().config_component(o) }
+            Err(_) => { return; }
         };
-        self.set(new);
-        out
+        self.set(Self { inner: new })
+    }
+    fn set_as_renderer(self: UseState<Self>, e: FormEvent) {
+        let new = match e.value.parse::<bool>() {
+            Ok(o) => { self.inner.clone().config_renderer(o) }
+            Err(_) => { return; }
+        };
+        self.set(Self { inner: new })
+    }
+    fn set_pre_indent(self: UseState<Self>, e: FormEvent) {
+        let new = match e.value.parse::<usize>() {
+            Ok(o) => { self.inner.clone().preset_indent(o) }
+            Err(_) => { return; }
+        };
+        self.set(Self { inner: new })
     }
 }
 
 pub fn Editor(cx: Scope) -> Element {
     let text = use_state(&cx, || String::new());
-    let cfg = use_state(&cx, || EditorSettings::default());
+    let cfg = use_state(&cx, || RsxBuilderComponent::default());
+    let component_name = cfg.inner.config.component_name.to_owned();
+    let is_component = cfg.inner.config.is_component;
+    let is_renderer = cfg.inner.config.is_renderer;
+    let pre_indent = cfg.inner.config.indent_pre;
 
     cx.render(rsx!(
         div {
@@ -118,7 +105,7 @@ pub fn Editor(cx: Scope) -> Element {
             }
             div {
                 class: "mockup-code flex-1",
-                cfg.get().render(text.get())
+                cfg.render(text.get())
             }
         }
         div {
@@ -130,9 +117,9 @@ pub fn Editor(cx: Scope) -> Element {
                     "Is Component"
                 }
                 input {
-                    class: "checkbox",
-                    checked: "checked",
                     r#type: "checkbox",
+                    class: "checkbox",
+                    checked: "{is_component}",
                     oninput: move |e| cfg.set_as_component(e)
                 }
             }
@@ -144,8 +131,8 @@ pub fn Editor(cx: Scope) -> Element {
                 input {
                     r#type: "text",
                     class: "input input-bordered input-sm",
-                    value: "App",
-                    // oninput: set_component
+                    value: "{component_name}",
+                    oninput: move |e| cfg.set_component_name(e)
                 }
             }
             label {
@@ -157,8 +144,8 @@ pub fn Editor(cx: Scope) -> Element {
                 input {
                     r#type: "checkbox",
                     class: "checkbox",
-                    checked: "checked",
-                    // oninput: move |e| cfg.set(cfg.set_is_r(e))
+                    checked: "{is_renderer}",
+                    oninput: move |e| cfg.set_as_renderer(e)
                 }
             }
             label {
@@ -170,13 +157,24 @@ pub fn Editor(cx: Scope) -> Element {
                 input {
                     r#type: "range",
                     class: "range",
-                    max: "100",
-                    value: "40",
-                    // oninput: set_component
+                    min: "0",
+                    max: "10",
+                    step: "1",
+                    value: "{pre_indent}",
+                    oninput: move |e| cfg.set_pre_indent(e)
                 }
                 span {
                     class: "label-text",
                     "0"
+                }
+            }
+            a {
+                href: "https://github.com/oovm/rsx-translater/issues",
+                target: "_blank",
+                button {
+                    class: "py-2 px-4 mr-2 mb-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700",
+                    r#type: "button",
+                    "Report bug on github"
                 }
             }
         }

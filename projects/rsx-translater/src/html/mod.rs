@@ -14,7 +14,7 @@ use std::fmt::{Debug, Formatter};
 
 #[derive(Clone)]
 pub struct RsxBuilder {
-    config: RsxBuilderConfig,
+    pub config: RsxBuilderConfig,
     buffer: String,
     indent_now: usize,
     svg_cache: Vec<Element>,
@@ -22,11 +22,11 @@ pub struct RsxBuilder {
 
 #[derive(Clone, Debug)]
 pub struct RsxBuilderConfig {
-    component_name: String,
-    indent_size: usize,
-    indent_pre: usize,
-    is_renderer: bool,
-    is_component: bool,
+    pub component_name: String,
+    pub indent_size: usize,
+    pub indent_pre: usize,
+    pub is_renderer: bool,
+    pub is_component: bool,
 }
 
 impl RsxBuilder {
@@ -46,14 +46,14 @@ impl RsxBuilder {
     pub fn reset(&mut self) {
         self.buffer.clear();
         self.svg_cache.clear();
-        self.indent_now = self.config.indent_pre;
-
+        self.indent_now = self.config.indent_pre * self.config.indent_size;
     }
 }
 
 
 impl AsRsx for Dom {
     fn write_rsx(&self, f: &mut RsxBuilder) -> Result<()> {
+        f.write_indent()?;
         f.write_component_l()?;
         f.write_render_l()?;
         for i in &self.children {
