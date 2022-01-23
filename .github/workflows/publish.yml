@@ -14,14 +14,14 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: wee
-            asset_name: wee-linux-amd64
+            artifact_name: rsx-desktop
+            asset_name: rsx-converter-linux
           - os: windows-latest
-            artifact_name: wee.exe
-            asset_name: wee-win-amd64.exe
+            artifact_name: rsx-desktop.exe
+            asset_name: rsx-converter-win.exe
           - os: macos-latest
-            artifact_name: wee
-            asset_name: wee-mac-amd64
+            artifact_name: rsx-desktop
+            asset_name: rsx-converter-mac
 
     steps:
       - uses: hecrj/setup-rust-action@v1

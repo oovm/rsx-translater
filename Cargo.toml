@@ -1,7 +1,7 @@
 [workspace]
 members = ["projects/*"]
 default-members = [
-    "projects/rsx-translater",
+    "projects/rsx-desktop",
 ]
 exclude = [
     "projects/.DS_Store",
